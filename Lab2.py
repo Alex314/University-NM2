@@ -1,7 +1,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from algs import rk4, rk3
+from algs import rk4 as rk4, adams_bashford_5
 
 
 def get_yd(x, y_list):
@@ -33,7 +33,7 @@ plt.subplot(3, 2, 1)
 plt.ylabel('Answer')
 
 for hi in h:
-    ans = rk3(interval[0], interval[1], step=hi, y0_list=y_0, f=get_yd)
+    ans = adams_bashford_5(interval[0], interval[1], step=hi, y0_list=y_0, f=get_yd)
     xp = ans[:, 0]
     yp = ans[:, 1]
     plt.subplot(3, 2, 1)
@@ -42,7 +42,7 @@ for hi in h:
     plt.plot(xp, yp, label='h=' + str(hi))
     if hi is h[-1]:
         plt.subplot(3, 1, 3)
-        plt.plot(xp, yp, label='Best RK3')
+        plt.plot(xp, yp, label='Best AB5')
     plt.subplot(3, 2, 3)
     plt.grid(True)
     e = yp - f_np(xp)
@@ -71,10 +71,9 @@ dotnum = 4000
 xplot = [interval[0] + i*(interval[1] - interval[0]) / dotnum for i in range(dotnum + 1)]
 yplot = [f(x) for x in xplot]
 
-#plt.title('Error')
 plt.subplot(3, 2, 1)
 plt.grid(True)
-plt.title('Runge–Kutta 3')
+plt.title('Adams-Bushford 5')
 plt.plot(xplot, yplot, label='True answer')
 plt.legend()
 plt.subplot(3, 2, 2)
