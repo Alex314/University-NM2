@@ -1,7 +1,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from algs import rk4 as rk4, adams_bashford_5
+from algs import rk3 as rk4, adams_bashford_5
 
 
 def get_yd(x, y_list):
@@ -60,7 +60,7 @@ for hi in h:
     plt.plot(xp, yp, label='h=' + str(hi))
     if hi is h[-1]:
         plt.subplot(3, 1, 3)
-        plt.plot(xp, yp, label='Best RK4')
+        plt.plot(xp, yp, label='Best RK3')
     plt.subplot(3, 2, 4)
     plt.grid(True)
     e = yp - f_np(xp)
@@ -78,7 +78,7 @@ plt.plot(xplot, yplot, label='True answer')
 plt.legend()
 plt.subplot(3, 2, 2)
 plt.grid(True)
-plt.title('Runge–Kutta 4')
+plt.title('Runge–Kutta 3')
 plt.plot(xplot, yplot, label='True answer')
 plt.legend()
 plt.subplot(3, 1, 3)

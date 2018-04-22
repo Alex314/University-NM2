@@ -17,28 +17,6 @@ def yd(x, y):
                      ])
 
 
-def ydRIB(x, y):
-    u = 0.25
-    k = [1.211, 22.188, 12.618, 0.044]
-    ans = np.array([1 / u * (-k[0] * y[0] + k[3] * y[1]),
-                     1 / u * (k[0] * y[0] - k[1] * y[1] + k[2] * y[2] - k[3] * y[1]),
-                     1 / u * (k[1] * y[1] - k[2] * y[2])
-                     ])
-    #print(ans)
-    return ans
-
-
-def ydRIC(x, y):
-    t = 4
-    ci = [0.265, 0, 0]
-    k = [1.211, 22.188, 12.618, 0.044]
-    ans = np.array([1 / t * (ci[0] - y[0]) - k[0] * y[0] + k[3] * y[1],
-                     1 / t * (ci[1] - y[1]) + k[0] * y[0] - k[1] * y[1] + k[2] * y[2] - k[3] * y[1],
-                     1 / t * (ci[2] - y[2]) + k[1] * y[1] - k[2] * y[2]
-                     ])
-    return ans
-
-
 def rk3(x0, x_end, step, y0_list, f=yd):
     """Runge–Kutta 3 method
 
@@ -125,6 +103,47 @@ def adams_bashford_5(x0, x_end, y0_list, step, f=yd, one_step_method=rk4):
         xk = x0 + (i + 1) * h
         ans = np.append(ans, np.insert(yk, 0, xk).reshape(1, 1 + len(yk)), axis=0)
         fk = np.append(fk, f(xk, yk).reshape(1, len(yk)), axis=0)
+    return ans
+
+
+def thomas(upper, central, low, b):
+    """Solve three-diagonal SLAE by Thomas method
+
+    :param upper: array, upper diagonal
+    :param central: array, main diagonal
+    :param low: array, low diagonal
+    :param b: array, right part of the SLAE
+    :return: numpy.ndarray, solution
+    """
+    neq = len(central)
+    ans = [0] * neq
+    for i in range(1, neq):
+        central[i] -= (upper[i - 1] * low[i - 1]) / central[i - 1]
+        b[i] -= (low[i - 1] * b[i - 1]) / central[i - 1]
+    ans[neq - 1] = (b[neq - 1] / central[neq - 1])
+    for j in range(neq - 2, -1, -1):
+        ans[j] = (b[j] - upper[j] * ans[j + 1]) / central[j]
+    return np.array(ans)
+
+
+def ydRIB(x, y):
+    u = 0.25
+    k = [1.211, 22.188, 12.618, 0.044]
+    ans = np.array([1 / u * (-k[0] * y[0] + k[3] * y[1]),
+                     1 / u * (k[0] * y[0] - k[1] * y[1] + k[2] * y[2] - k[3] * y[1]),
+                     1 / u * (k[1] * y[1] - k[2] * y[2])
+                     ])
+    return ans
+
+
+def ydRIC(x, y):
+    t = 4
+    ci = [0.265, 0, 0]
+    k = [1.211, 22.188, 12.618, 0.044]
+    ans = np.array([1 / t * (ci[0] - y[0]) - k[0] * y[0] + k[3] * y[1],
+                     1 / t * (ci[1] - y[1]) + k[0] * y[0] - k[1] * y[1] + k[2] * y[2] - k[3] * y[1],
+                     1 / t * (ci[2] - y[2]) + k[1] * y[1] - k[2] * y[2]
+                     ])
     return ans
 
 
