@@ -40,29 +40,29 @@ def decompose(interval, n, p, g, k, inner_cond, outer_cond):
     return up, mid, down, b
 
 
-# n = 50
-# p = 2  # Coordinate system
-# r1, r2 = 0.2, 0.4
-# g = 3.6E6
-# k = 80
-# # Inner border conditions
-# h = 500
-# t_0 = 50
-# # Outer border conditions
-# t_b = 50
-
-n = 60
-p = 0  # Coordinate system
-r1, r2 = 0.0001, 0.6
-g = 2E5
-k = 50
+n = 50
+p = 2  # Coordinate system
+r1, r2 = 0.2, 0.4
+g = 3.6E6
+k = 80
 # Inner border conditions
-qa = -5E4
+h = 500
+t_0 = 50
 # Outer border conditions
-h = 400
-t_inf = 80
+t_b = 50
 
-u, c, d, b = decompose(interval=(r1, r2), n=n, p=p, g=g, k=k, inner_cond=(2, qa), outer_cond=(3, h, t_inf))
+# n = 60
+# p = 0  # Coordinate system
+# r1, r2 = 0.0001, 0.6
+# g = 2E5
+# k = 50
+# # Inner border conditions
+# qa = -5E4
+# # Outer border conditions
+# h = 400
+# t_inf = 80
+
+u, c, d, b = decompose(interval=(r1, r2), n=n, p=p, g=g, k=k, inner_cond=(3, h, t_0), outer_cond=(1, t_b))
 t = thomas(u, c, d, b)
 
 qa = -k * (-3 * t[0] + 4 * t[1] - t[2]) / 2 / (r2 - r1) * n

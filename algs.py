@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 def yd(x, y):
-    """y''=sin x
+    """ y''=sin x
 
     k' = sin x
     y' = k
@@ -87,7 +87,7 @@ def adams_bashford_5(x0, x_end, y0_list, step, f=yd, one_step_method=rk4):
     assert x_end > x0
     n = round((x_end - x0) / step)
     n = 1 if n < 1 else n
-    h = (x_end - x0) / n
+    h = (x_end - x0) / nh
     xy_first = one_step_method(x0, x0 + 4 * h, step=h, y0_list=y0_list, f=f)
     yk = np.array(xy_first[4, 1:], dtype='f')
     fk = np.zeros_like(xy_first[:, 1:])
@@ -173,7 +173,18 @@ if __name__ == '__main__':
     plt.grid(True)
     plt.legend()
     plt.title('РИС')
-    '''plt.plot(xp, yp, label='y\'')
+    # ans = rk3(0, 3.14, 0.01, [-1, 0])
+    # x = np.linspace(0, 1, 3.14/0.01+2)
+    # y1 = -1 * np.sin(x)
+    # plt.plot(x, ans[:, 2])
+    # plt.plot(x, ans[:, 1])
+    #
+    # print(ans)
+    # eps = np.abs(y1 - ans[:, 2])
+    # for i in eps:
+    #     print(i)
+    '''plt.plot(
+    xp, yp, label='y\'')
     plt.plot(xp, y, label='y')
     plt.ylabel('Y')
     plt.title('Solution')

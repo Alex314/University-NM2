@@ -14,28 +14,28 @@ def calculate(interval, n, p, g, k, inner_cond, outer_cond, t_interval, dt, T0, 
     beta = alpha * dt / d**2
 
     for i in range(1, len(T)):
-        T[i, 1:-1] = T[i-1, :-2] * beta * (1 - p * d / 2 * r[1:-1]) + T[i-1, 1:-1] * (1 - 2 * beta)\
-                        + T[i-1, 2:] * beta * (1 + p * d / 2 * r[1:-1]) + beta * g * d**2 / k
+        T[i, 1:-1] = T[i-1, :-2] * beta * (1 - p * d / 2 / r[1:-1]) + T[i-1, 1:-1] * (1 - 2 * beta)\
+                        + T[i-1, 2:] * beta * (1 + p * d / 2 / r[1:-1]) + beta * g * d**2 / k
         # Inner border conditions
         if inner_cond[0] in [3, 'r', 'R']:
             h, t_inf = inner_cond[1:]
-            T[i, 0] = ((t_inf - T[i-1, 0]) * 2 * d * h / k + T[i-1, 1]) * beta * (1 - p * d / 2 * r[0]) + \
-                      T[i-1, 0] * (1 - 2 * beta) + T[i-1, 1] * beta * (1 + p * d / 2 * r[0]) + beta * g * d**2 / k
-        # elif inner_cond[0] == 2 and p == 0:
-        #     qa = inner_cond[1]
-        #     mid[0] = -2
-        #     up[0] = 2
-        #     b[0] = -g * d ** 2 / k - 2 * d * qa / k
+            T[i, 0] = ((t_inf - T[i-1, 0]) * 2 * d * h / k + T[i-1, 1]) * beta * (1 - p * d / 2 / r[0]) + \
+                      T[i-1, 0] * (1 - 2 * beta) + T[i-1, 1] * beta * (1 + p * d / 2 / r[0]) + beta * g * d**2 / k
+        elif inner_cond[0] == 2 and p == 0:
+            qa = inner_cond[1]
+            T[i, 0] = (T[i - 1, 1] + 2 * d * qa / k) * beta * (1 - p * d / 2 / r[0]) + \
+                      T[i - 1, 0] * (1 - 2 * beta) + T[i - 1, 1] * beta * (1 + p * d / 2 / r[0]) + beta * g * d ** 2 / k
         else:
             raise ValueError
         # Outer border conditions
         if outer_cond[0] == 1:
             T[i, -1] = outer_cond[1]
-        # elif outer_cond[0] == 3 and p == 0:
-        #     h, t_inf = outer_cond[1:]
-        #     down[-1] = 2
-        #     mid[-1] = -2 - 2 * d * h / k
-        #     b[-1] = - g * d ** 2 / k - 2 * d * h * t_inf / k
+        elif outer_cond[0] == 3 and p == 0:
+            h, t_inf = outer_cond[1:]
+            T[i, -1] = T[i - 1, -2] * beta * (1 - p * d / 2 / r[-1]) + \
+                       T[i - 1, -1] * (1 - 2 * beta) + \
+                       ((t_inf - T[i - 1, -1]) * 2 * d * h / k + T[i - 1, -2]) * beta * (1 + p * d / 2 / r[-1]) + \
+                       beta * g * d ** 2 / k
         else:
             raise ValueError
     return T
@@ -56,7 +56,8 @@ t_b = 50
 o_cond = (1, t_b)
 
 t_arr = [0, 5, 10, 15, 20, 25, 50]
-t_interval = (0, 50)
+# t_arr = [0, 20, 40, 60, 80, 100, 200]
+t_interval = (0, 200)
 dt = 0.01
 
 indexes = [int(t / dt) for t in t_arr]
@@ -66,6 +67,8 @@ indexes = [int(t / dt) for t in t_arr]
 # r1, r2 = 0.0001, 0.6
 # g = 2E5
 # k = 50
+# alpha = 4e-3
+# t_0 = 80
 # # Inner border conditions
 # qa = -5E4
 # i_cond = (2, qa)
